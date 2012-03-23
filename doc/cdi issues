@@ -1,0 +1,7 @@
+@Named("DemoBeans")
+@SessionScoped
+public class DemoBeans 
+WELD-000072 Managed bean declaring a passivating scope must be passivation capable. Bean: Managed Bean [class BeanPakage.DemoBeans] with qualifiers [@Any @Default @Named]
+->
+
+public class DemoBean implements Serializable { ... }
