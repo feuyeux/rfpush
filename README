@@ -13,3 +13,6 @@ Existing Git Repo?
   cd existing_git_repo
   git remote add origin git@github.com:feuyeux/rfpush.git
   git push -u origin master
+
+04/04/2012
+publish page: http://feuyeux.github.com/rfpush
