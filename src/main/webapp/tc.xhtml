@@ -3,6 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:a4j="http://richfaces.org/a4j">
 <h:head>
+	<link rel="shortcut icon" href="#{jsfrfEnv.imagePath}favicon.ico" />
 	<title>RichFaces4 Push Demo</title>
 	<script>
 	var n=1;
@@ -21,7 +22,9 @@
 		</a4j:push>
 		<div id="outputDate">等待中……</div>
 	</h:form>
-	<h:link value="jms" outcome="index" />
-	<h:link value="CDI" outcome="cdi" />
+	<h:panelGrid>
+		<h:link value="jms" outcome="index" />
+		<h:link value="CDI" outcome="cdi" />
+	</h:panelGrid>
 </h:body>
 </html>
