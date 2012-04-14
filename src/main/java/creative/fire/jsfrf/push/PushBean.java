@@ -14,7 +14,7 @@ import org.richfaces.application.push.TopicsContext;
 @ManagedBean
 public class PushBean {
 	public void push() throws MessageException {
-		TopicKey topicKey = new TopicKey("jsfrfAddress");
+		TopicKey topicKey = new TopicKey("rfAddress");
 		TopicsContext topicsContext = TopicsContext.lookup();
 		int testCount = 10;
 		while (testCount > 0) {

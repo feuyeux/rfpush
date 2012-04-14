@@ -4,7 +4,7 @@
 	xmlns:a4j="http://richfaces.org/a4j">
 <h:head>
 	<link rel="shortcut icon" href="#{jsfrfEnv.imagePath}favicon.ico" />
-	<title>RichFaces4 Push Demo CDI</title>
+	<title>RichFaces4 Push Demo JMS</title>
 	<script>
 	var n=1;
 	function update(data){
@@ -15,18 +15,13 @@
 </h:head>
 <h:body>
 	<h:form prependId="false">
-		<a4j:commandButton value="CDI Push Test" action="#{cdiPushBean.push}" />
-		<a4j:push id="datePush1" address="rfAddress" ondataavailable="update(event.rf.data);" />
-		<a4j:push id="datePush2" address="rfAddress1">
-			<f:ajax event="dataavailable" />
-		</a4j:push>
+		<a4j:push id="datePush3" address="pushJms" ondataavailable="update(event.rf.data);" onerror="alert(event.rf.data);" />
 		<div id="outputDate">等待中……</div>
 	</h:form>
-	<br/>
 	<h:panelGrid>
-		<h:link value="Index" outcome="index" />
 		<h:link value="TopicContext" outcome="tc" />
-		<h:link value="JMS" outcome="jms" />
+		<h:link value="CDI" outcome="cdi" />
 	</h:panelGrid>
+
 </h:body>
 </html>

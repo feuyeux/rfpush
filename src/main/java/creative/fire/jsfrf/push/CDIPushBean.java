@@ -17,7 +17,7 @@ import org.richfaces.cdi.push.Push;
 public class CDIPushBean implements Serializable {
 	private static final long serialVersionUID = 9012104591335228707L;
 	@Inject
-	@Push(topic = "jsfrfAddress")
+	@Push(topic = "rfAddress")
 	Event<String> pushEvent;
 
 	public void push() throws MessageException {

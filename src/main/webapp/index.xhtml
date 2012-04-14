@@ -1,31 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:a4j="http://richfaces.org/a4j">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:a4j="http://richfaces.org/a4j">
 <h:head>
-<<<<<<< HEAD
 	<link rel="shortcut icon" href="#{jsfrfEnv.imagePath}favicon.ico" />
 	<title>RichFaces4 Push Demo</title>
-=======
-	<title>RichFaces4 Push Demo JMS</title>
->>>>>>> 5cf7840917d11db3e18624735db1a1bde6ffb027
-	<script>
-	var n=1;
-	function update(data){
-		var p = jQuery('#outputDate');
-		p.text(n+++': '+data);
-	}
-	</script>
 </h:head>
 <h:body>
-	<h:form prependId="false">
-		<a4j:push id="datePush3" address="pushJms" ondataavailable="update(event.rf.data);" onerror="alert(event.rf.data);" />
-		<div id="outputDate">等待中……</div>
-	</h:form>
 	<h:panelGrid>
 		<h:link value="TopicContext" outcome="tc" />
 		<h:link value="CDI" outcome="cdi" />
+		<h:link value="JMS" outcome="jms" />
 	</h:panelGrid>
-
 </h:body>
 </html>

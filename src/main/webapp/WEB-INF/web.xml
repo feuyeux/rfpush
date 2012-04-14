@@ -1,73 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app id="richfaces-showcase" version="3.0"
-	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	id="richfaces-showcase" version="3.0">
 	<display-name>rfpush</display-name>
+
 	<context-param>
 		<param-name>javax.faces.PROJECT_STAGE</param-name>
 		<param-value>Development</param-value>
 	</context-param>
+
 	<context-param>
 		<param-name>javax.faces.SKIP_COMMENTS</param-name>
 		<param-value>true</param-value>
 	</context-param>
-	
-	<context-param>
-		<param-name>org.atmosphere.useBlocking</param-name>
-		<param-value>true</param-value>
-	</context-param>
-	
-	<!-- setups servlet-mapping in RichFaces configuration -->
-	<context-param>
-		<param-name>org.richfaces.push.handlerMapping</param-name>
-		<param-value>/__richfaces_push</param-value>
-	</context-param>
-	
-	<!-- CDI E JMS B -->
-	<context-param>
-		<param-name>org.richfaces.push.initializeOnStartup</param-name>
-		<param-value>true</param-value>
-	</context-param>
-	<context-param>
-		<param-name>org.richfaces.push.jms.connectionPassword</param-name>
-		<param-value>guest</param-value>
-	</context-param>
-	<context-param>
-		<param-name>org.richfaces.push.jms.connectionUsername</param-name>
-		<param-value>guest</param-value>
-	</context-param>
-	<context-param>
-		<param-name>org.richfaces.push.jms.enabled</param-name>
-		<param-value>true</param-value>
-	</context-param>
-	
-	<context-param>
-		<param-name>org.richfaces.resourceMapping.enabled</param-name>
-		<param-value>true</param-value>
-	</context-param>
-	<servlet>
-		<servlet-name>Resource Servlet</servlet-name>
-		<servlet-class>org.richfaces.webapp.ResourceServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	
-	<!-- CDI B -->
-	<listener>
-		<listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
-	</listener>
+
 	<servlet>
 		<servlet-name>Faces Servlet</servlet-name>
 		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-
-	<!-- eric: Push Servlet - listens for user sessions begin -->
-	<servlet>
-		<servlet-name>Push Servlet</servlet-name>
-		<servlet-class>org.richfaces.webapp.PushServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	
 	<servlet-mapping>
 		<servlet-name>Faces Servlet</servlet-name>
 		<url-pattern>*.jsf</url-pattern>
@@ -76,32 +28,98 @@
 		<servlet-name>Faces Servlet</servlet-name>
 		<url-pattern>/faces/*</url-pattern>
 	</servlet-mapping>
+
+	<!-- Resource Servlet - serves static resources and resources for specific 
+		components -->
+	<servlet>
+		<servlet-name>Resource Servlet</servlet-name>
+		<servlet-class>org.richfaces.webapp.ResourceServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>Resource Servlet</servlet-name>
 		<url-pattern>/org.richfaces.resources/*</url-pattern>
 	</servlet-mapping>
-	
+
+	<!-- Resource Mapping - resources will be served compressed and packed in 
+		production -->
+	<context-param>
+		<param-name>org.richfaces.resourceMapping.enabled</param-name>
+		<param-value>true</param-value>
+	</context-param>
+
+
+	<!-- Push Servlet B -->
+	<servlet>
+		<servlet-name>Push Servlet</servlet-name>
+		<servlet-class>org.richfaces.webapp.PushServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>Push Servlet</servlet-name>
 		<url-pattern>/__richfaces_push</url-pattern>
 	</servlet-mapping>
-	
+
+	<!-- setups servlet-mapping in RichFaces configuration -->
+	<context-param>
+		<param-name>org.richfaces.push.handlerMapping</param-name>
+		<param-value>/__richfaces_push</param-value>
+	</context-param>
+	<!-- Push Servlet E-->
+
+	<!-- async io B -->
+	<context-param>
+		<param-name>org.atmosphere.useBlocking</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<!-- async io E -->
+
 	<session-config>
 		<session-timeout>30</session-timeout>
 	</session-config>
+
 	<welcome-file-list>
 		<welcome-file>faces/index.xhtml</welcome-file>
 	</welcome-file-list>
-	
-	<!-- Configures PushFilter JMS E -->
+
+	<login-config>
+		<auth-method>BASIC</auth-method>
+	</login-config>
+
+	<!-- CDI B -->
+	<listener>
+		<listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
+	</listener>
+	<!-- CDI E -->
+
+	<!-- JMS B -->
+	<context-param>
+		<param-name>org.richfaces.push.initializeOnStartup</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>org.richfaces.push.jms.enabled</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>org.richfaces.push.jms.connectionUsername</param-name>
+		<param-value>guest</param-value>
+	</context-param>
+	<context-param>
+		<param-name>org.richfaces.push.jms.connectionPassword</param-name>
+		<param-value>guest</param-value>
+	</context-param>
+
+	<!-- Configures PushFilter
 	<filter>
 		<filter-name>PushFilter</filter-name>
 		<filter-class>org.richfaces.webapp.PushFilter</filter-class>
 		<async-supported>true</async-supported>
 	</filter>
-	
 	<filter-mapping>
 		<filter-name>PushFilter</filter-name>
 		<servlet-name>Faces Servlet</servlet-name>
 	</filter-mapping>
+	 -->
+	<!-- JMS E -->
 </web-app>
