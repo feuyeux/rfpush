@@ -2,6 +2,7 @@ package creative.fire.jsfrf.push.jms;
 
 import static creative.fire.jsfrf.push.jms.JMSProducer.PUSH_JMS_TOPIC;
 
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.faces.application.Application;
@@ -82,7 +83,7 @@ public class JMSProduceImpl implements SystemEventListener, ServletContextListen
 		producerThread = new Thread(producerRunner, "MessageProducerThread");
 		producerThread.setDaemon(false);
 		producerThread.start();
- 
+
 	}
 
 	private void destroy() {
@@ -103,10 +104,20 @@ public class JMSProduceImpl implements SystemEventListener, ServletContextListen
 
 	private static boolean isJmsEnabled() {
 		if (null == JMS_ENABLED.get()) {
-			boolean isJmsEnabled = isConnectionFactoryRegistered() || isTomcat();
+			boolean isJmsEnabled = isJmsPush() && (isConnectionFactoryRegistered() || isTomcat());
 			JMS_ENABLED.compareAndSet(null, isJmsEnabled);
 		}
 		return JMS_ENABLED.get();
+	}
+
+	private static boolean isJmsPush() {
+		@SuppressWarnings("unchecked")
+		Map<String, String> parameters = FacesContext.getCurrentInstance().getExternalContext().getInitParameterMap();
+		String enabeld = parameters.get("org.richfaces.push.jms.enabled");
+		if (enabeld == null)
+			return false;
+		else
+			return "true".equals(enabeld);
 	}
 
 	private static boolean isConnectionFactoryRegistered() {

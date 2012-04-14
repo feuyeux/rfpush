@@ -52,27 +52,29 @@ public class JMSServer {
 		jmsServerManager.createTopic(false, topicName, jndiName);
 	}
 
+	private Configuration createHornetQConfiguration() {
+		String naf=NettyAcceptorFactory.class.getName();
+		String ncf=NettyConnectorFactory.class.getName();
+		HashSet<TransportConfiguration> tSet = new HashSet<TransportConfiguration>();
+		TransportConfiguration t1 = new TransportConfiguration(naf);
+		TransportConfiguration t2 = new TransportConfiguration(ncf);
+		tSet.add(t1);
+		Configuration conf = new ConfigurationImpl();
+		conf.setPersistenceEnabled(false);
+		conf.setSecurityEnabled(false);
+		conf.setAcceptorConfigurations(tSet);
+		conf.getConnectorConfigurations().put("netty", t2);
+		return conf;
+	}
+
+	private String f = "ConnectionFactory";
+
 	private void createJMSConnectionFactory() throws Exception {
 		List<String> connectors = Arrays.asList(new String[] { "netty" });
 
-		ConnectionFactoryConfiguration connectionFactoryConfiguration = new ConnectionFactoryConfigurationImpl("ConnectionFactory", false, connectors,
-				(String) null);
-		connectionFactoryConfiguration.setUseGlobalPools(false);
+		ConnectionFactoryConfiguration config = new ConnectionFactoryConfigurationImpl(f, false, connectors, (String) null);
+		config.setUseGlobalPools(false);
 
-		jmsServerManager.createConnectionFactory(false, connectionFactoryConfiguration, "ConnectionFactory");
-	}
-
-	private Configuration createHornetQConfiguration() {
-		Configuration configuration = new ConfigurationImpl();
-		configuration.setPersistenceEnabled(false);
-		configuration.setSecurityEnabled(false);
-
-		TransportConfiguration transportationConfiguration = new TransportConfiguration(NettyAcceptorFactory.class.getName());
-		HashSet<TransportConfiguration> setTransp = new HashSet<TransportConfiguration>();
-		setTransp.add(transportationConfiguration);
-		configuration.setAcceptorConfigurations(setTransp);
-		configuration.getConnectorConfigurations().put("netty", new TransportConfiguration(NettyConnectorFactory.class.getName()));
-
-		return configuration;
+		jmsServerManager.createConnectionFactory(false, config, f);
 	}
 }

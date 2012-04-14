@@ -18,9 +18,14 @@ import org.richfaces.cdi.push.Push;
 public class CDIPushBean implements Serializable {
 	private static final long serialVersionUID = 9012104591335228707L;
 	private static final Logger log = Logger.getLogger(CDIPushBean.class.getName());
+
 	@Inject
 	@Push(topic = "cdiAddress")
 	Event<String> pushEvent;
+
+	public CDIPushBean() {
+		log.info("CDIPushBean initializing.");
+	}
 
 	public void push() throws MessageException {
 		int testCount = 10;
