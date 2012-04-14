@@ -1,15 +1,13 @@
 package creative.fire.jsfrf.push.jms;
 
-import java.io.Serializable;
-import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.jms.JMSException;
-import javax.jms.ObjectMessage;
 import javax.jms.Session;
+import javax.jms.TextMessage;
 import javax.jms.Topic;
 import javax.jms.TopicConnection;
 import javax.jms.TopicConnectionFactory;
@@ -19,12 +17,9 @@ import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 
-/**
- * Sends message to JMS topic.
- */
 public class JMSProducer {
-	private static final Logger LOGGER = Logger.getLogger(JMSProducer.class.getName());
-	public static final String PUSH_JMS_TOPIC = "pushJms";
+	private static final Logger log = Logger.getLogger(JMSProducer.class.getName());
+	public static final String PUSH_JMS_TOPIC = "jmsAddress";
 	private Topic topic;
 	private TopicConnection connection = null;
 	private TopicSession session = null;
@@ -32,25 +27,24 @@ public class JMSProducer {
 
 	public void sendMessage() throws Exception {
 		try {
-			initializeMessaging();
-			ObjectMessage message = session.createObjectMessage(createMessage());
+			connect();
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String time = format.format(new Date());
+			TextMessage message = session.createTextMessage(time);
 			publisher.publish(message);
-			LOGGER.info("publishing");
+			log.info("push event to " + PUSH_JMS_TOPIC);
 		} catch (NameNotFoundException e) {
-			LOGGER.fine(e.getMessage());
+			log.fine(e.getMessage());
 		} catch (JMSException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			log.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
-	private Serializable createMessage() {
-		DateFormat dateFormat = DateFormat.getDateTimeInstance();
-		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-		String dateMessage = dateFormat.format(new Date());
-		return dateMessage;
+	public int getInterval() {
+		return 5000;
 	}
-
-	private void initializeMessaging() throws JMSException, NamingException {
+	
+	private void connect() throws JMSException, NamingException {
 		if (connection == null) {
 			TopicConnectionFactory tcf = getTopicConnectionFactory();
 			connection = tcf.createTopicConnection();
@@ -66,30 +60,26 @@ public class JMSProducer {
 		}
 	}
 
-	public int getInterval() {
-		return 5000;
-	}
-
-	public void finalizeProducer() {
+	public void disconnect() {
 		if (publisher != null) {
 			try {
 				publisher.close();
 			} catch (JMSException e) {
-				LOGGER.severe("unable to close publisher");
+				log.severe("unable to close publisher");
 			}
 		}
 		if (session != null) {
 			try {
 				session.close();
 			} catch (JMSException e) {
-				LOGGER.severe("unable to close session");
+				log.severe("unable to close session");
 			}
 		}
 		if (connection != null) {
 			try {
 				connection.close();
 			} catch (JMSException e) {
-				LOGGER.severe("unable to close connection");
+				log.severe("unable to close connection");
 			}
 		}
 	}

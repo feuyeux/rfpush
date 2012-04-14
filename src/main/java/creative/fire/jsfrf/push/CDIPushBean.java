@@ -3,6 +3,7 @@ package creative.fire.jsfrf.push;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Event;
@@ -16,8 +17,9 @@ import org.richfaces.cdi.push.Push;
 @SessionScoped
 public class CDIPushBean implements Serializable {
 	private static final long serialVersionUID = 9012104591335228707L;
+	private static final Logger log = Logger.getLogger(CDIPushBean.class.getName());
 	@Inject
-	@Push(topic = "rfAddress")
+	@Push(topic = "cdiAddress")
 	Event<String> pushEvent;
 
 	public void push() throws MessageException {
@@ -25,9 +27,8 @@ public class CDIPushBean implements Serializable {
 		while (testCount > 0) {
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String time = format.format(new Date());
-			//topicsContext.publish(topicKey, time);
 			pushEvent.fire(time);
-			System.out.println("push event " + testCount);
+			log.info("push event to cdiAddress:" + testCount);
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {

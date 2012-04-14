@@ -15,7 +15,7 @@
 </h:head>
 <h:body>
 	<h:form prependId="false">
-		<a4j:push id="datePush3" address="pushJms" ondataavailable="update(event.rf.data);" onerror="alert(event.rf.data);" />
+		<a4j:push id="datePush3" address="jmsAddress" ondataavailable="update(event.rf.data);" onerror="alert(event.rf.data);" />
 		<div id="outputDate">等待中……</div>
 	</h:form>
 	<h:panelGrid>

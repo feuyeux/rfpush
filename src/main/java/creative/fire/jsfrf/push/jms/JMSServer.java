@@ -1,4 +1,4 @@
-package creative.fire.jsfrf.push.jms.provider;
+package creative.fire.jsfrf.push.jms;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -20,45 +20,36 @@ import org.hornetq.jms.server.config.ConnectionFactoryConfiguration;
 import org.hornetq.jms.server.config.impl.ConnectionFactoryConfigurationImpl;
 import org.hornetq.jms.server.impl.JMSServerManagerImpl;
 
-public class ServerProvider {
-
-	private static final Logger logger = Logger.getLogger(ServerProvider.class.getName());
-
+public class JMSServer {
+	private static final Logger logger = Logger.getLogger(JMSServer.class.getName());
 	private HornetQServer jmsServer;
 	private JMSServerManager jmsServerManager;
 
-	public void initializeProvider() {
+	public void start() {
 		try {
-			startJMSServer();
-			startJMSServerManager();
+			jmsServer = HornetQServers.newHornetQServer(createHornetQConfiguration());
+			jmsServerManager = new JMSServerManagerImpl(jmsServer);
+			jmsServerManager.setContext(new InitialContext());
+			jmsServerManager.start();
 			createJMSConnectionFactory();
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getLocalizedMessage());
 		}
 	}
 
-	public void createTopic(String topicName, String jndiName) throws Exception {
-		jmsServerManager.createTopic(false, topicName, jndiName);
-	}
-
-	public void finalizeProvider() {
+	public void stop() {
 		try {
-			stopJMSServerManager();
-			stopJMSServer();
+			jmsServerManager.stop();
+			jmsServerManager = null;
+			jmsServer.stop();
+			jmsServer = null;
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "wasn't able to finalize custom messaging");
 		}
 	}
 
-	private void startJMSServer() throws Exception {
-		jmsServer = HornetQServers.newHornetQServer(createHornetQConfiguration());
-	}
-
-	private void startJMSServerManager() throws Exception {
-		jmsServerManager = new JMSServerManagerImpl(jmsServer);
-		InitialContext context = new InitialContext();
-		jmsServerManager.setContext(context);
-		jmsServerManager.start();
+	public void createTopic(String topicName, String jndiName) throws Exception {
+		jmsServerManager.createTopic(false, topicName, jndiName);
 	}
 
 	private void createJMSConnectionFactory() throws Exception {
@@ -69,16 +60,6 @@ public class ServerProvider {
 		connectionFactoryConfiguration.setUseGlobalPools(false);
 
 		jmsServerManager.createConnectionFactory(false, connectionFactoryConfiguration, "ConnectionFactory");
-	}
-
-	private void stopJMSServer() throws Exception {
-		jmsServer.stop();
-		jmsServer = null;
-	}
-
-	private void stopJMSServerManager() throws Exception {
-		jmsServerManager.stop();
-		jmsServerManager = null;
 	}
 
 	private Configuration createHornetQConfiguration() {
@@ -94,5 +75,4 @@ public class ServerProvider {
 
 		return configuration;
 	}
-
 }

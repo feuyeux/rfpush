@@ -16,9 +16,9 @@
 <h:body>
 	<h:form prependId="false">
 		<a4j:commandButton value="CDI Push Test" action="#{cdiPushBean.push}" />
-		<a4j:push id="datePush1" address="rfAddress" ondataavailable="update(event.rf.data);" />
-		<a4j:push id="datePush2" address="rfAddress1">
-			<f:ajax event="dataavailable" />
+		<a4j:push id="datePush1" address="cdiAddress" ondataavailable="update(event.rf.data);" />
+		<a4j:push id="datePush2" address="_cdiAddress">
+			<f:ajax event="dataavailable" onevent="alert(event.rf.data);"/>
 		</a4j:push>
 		<div id="outputDate">等待中……</div>
 	</h:form>
